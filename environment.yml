@@ -1,0 +1,31 @@
+---
+name: final_project
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - conda-lock
+  - ipykernel
+  - jupyterlab
+  - pandas
+  - pdbpp
+  - pip >=21.1
+  - plotly>=5.13.0
+  - pre-commit
+  - pytask-julia
+  - pytask-latex
+  - pytask-parallel
+  - pytask>=0.2
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  - python-graphviz
+  - python=3.11
+  - pyyaml
+  - setuptools_scm
+  - statsmodels
+  - toml
+  - pip:
+      - -e .
+      - kaleido
