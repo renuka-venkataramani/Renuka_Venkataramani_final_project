@@ -3,7 +3,7 @@
 import pandas as pd
 
 
-def clean_data(data, data_info):
+def clean_data(data_1, data_info):
     """Clean data set.
 
     Information on data columns is stored in ``data_management/data_info.yaml``.
@@ -24,13 +24,39 @@ def clean_data(data, data_info):
         pandas.DataFrame: The cleaned data set.
 
     """
-    data = data.drop(columns=data_info["columns_to_drop"])
-    data = data.dropna()
+    data_1 = data_1.drop(columns=data_info["columns_to_drop"])
+    data_1 = data_1.dropna()
     for cat_col in data_info["categorical_columns"]:
-        data[cat_col] = data[cat_col].astype("category")
-    data = data.rename(columns=data_info["column_rename_mapping"])
+        data_1[cat_col] = data_1[cat_col].astype("category")
+    data_1 = data_1.rename(columns=data_info["column_rename_mapping"])
 
-    numerical_outcome = pd.Categorical(data[data_info["outcome"]]).codes
-    data[data_info["outcome_numerical"]] = numerical_outcome
+    numerical_outcome = pd.Categorical(data_1[data_info["outcome"]]).codes
+    data_1[data_info["outcome_numerical"]] = numerical_outcome
 
+    return data_1
+
+
+def load_data(file_path):
+    """This function imports either stata or csv data file.
+
+    Parameters
+    ----------
+    file_path:  str
+         The path to the data file.
+
+    Returns:
+    -------
+    df: pd.DataFrame
+        Data in pandas dataframe
+
+    """
+    file_extension = str(file_path).split(".")[-1]
+    try:
+        if any(i in "dta" for i in file_extension) is True:
+            data = pd.read_stata(file_path)
+        else:
+            data = pd.read_csv(file_path)
+    except ValueError as error:
+        info = "Datafile should be either .dta or .csv file!"
+        raise ValueError(info) from error
     return data
