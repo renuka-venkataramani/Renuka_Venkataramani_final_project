@@ -3,6 +3,27 @@ import pandas as pd
 from final_project.data_management import select_partial_data
 
 
+def construct_control_variables_dataset(data, data_info):
+    crop_share = _construct_crop_shares(data, data_info)
+    cs_no_plantaion_crop = crop_share.drop(columns=["plantation_crops"])
+    # plantation_crop is included while creating largest_share categorical variable
+    dominant_crop_indicators = _construct_dominant_crop_indicators(crop_share)
+    # plantation_crop is excluded while creating largest_share categorical variable
+    largest_crop_indicators = __create_max_share_dummies(
+        data=cs_no_plantaion_crop,
+        dummy_name="largest_",
+    )
+    control_variables = pd.concat(
+        [crop_share, dominant_crop_indicators, largest_crop_indicators],
+        axis=1,
+    )
+    for col in cs_no_plantaion_crop.columns:
+        control_variables["share" + "_" + col] = (
+            cs_no_plantaion_crop[col] > 0.5
+        ).astype(int)
+    return control_variables
+
+
 def _construct_crop_shares(data, data_info):
     data = data.drop(columns=data_info["drop_construction_variable_columns"])
     agri_crop_output = __select_agricrop_output(data, data_info)
