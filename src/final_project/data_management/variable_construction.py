@@ -50,3 +50,23 @@ def __construct_crop_share_dataset(agri_crop_output):
         crop_share_data = pd.concat([crop_share_data, agri_crop_shares], axis=1)
     crop_share_data.columns = agri_crop_output.columns.to_list()
     return crop_share_data
+
+
+def _construct_dominant_crop_indicators(data):
+    # plantation_crop type is included
+    dominant_share_dummies = __create_max_share_dummies(data, dummy_name="dominant_")
+    # subset includes dominant_share_indicators of  'wheat', 'corn', 'cotton', 'hay', 'animal_slaughtered'
+    dominant_dummy_subset = select_partial_data(
+        dominant_share_dummies,
+        variables_list=(list(np.array(data.columns.to_list())[[0, 2, 6, 16, 35]])),
+    )
+    return dominant_dummy_subset
+
+
+def __create_max_share_dummies(data, dummy_name):
+    crop_share_data = data.copy()
+    crop_share_data["dominant_crop"] = data.idxmax(axis=1)
+    dominant_share_dummies = pd.get_dummies(crop_share_data["dominant_crop"]).rename(
+        columns=lambda x: dummy_name + str(x),
+    )
+    return dominant_share_dummies
