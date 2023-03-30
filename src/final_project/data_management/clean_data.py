@@ -1,9 +1,10 @@
 """Function(s) for cleaning the data set(s)."""
 
+
 import pandas as pd
 
 
-def clean_data(data_1, data_info):
+def clean_data1(data_1, data_info):
     """Clean data set.
 
     Information on data columns is stored in ``data_management/data_info.yaml``.
@@ -39,15 +40,11 @@ def clean_data(data_1, data_info):
 def load_data(file_path):
     """This function imports either stata or csv data file.
 
-    Parameters
-    ----------
-    file_path:  str
-         The path to the data file.
+    Args:
+    file_path (str): The path to the data file.
 
     Returns:
-    -------
-    df: pd.DataFrame
-        Data in pandas dataframe
+    data (pandas.DataFrame): Data in pandas dataframe
 
     """
     file_extension = str(file_path).split(".")[-1]
@@ -60,3 +57,14 @@ def load_data(file_path):
         info = "Datafile should be either .dta or .csv file!"
         raise ValueError(info) from error
     return data
+
+
+def select_partial_data(data, variables_list):
+    outcome_variables_data = pd.DataFrame()
+    for col_name in variables_list:
+        outcome_variable = data.loc[:, data.columns.str.contains(col_name)]
+        outcome_variables_data = pd.concat(
+            [outcome_variables_data, outcome_variable],
+            axis=1,
+        )
+    return outcome_variables_data
