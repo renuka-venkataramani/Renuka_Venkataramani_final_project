@@ -14,21 +14,6 @@ from final_project.utilities import read_yaml
     {
         "scripts": ["clean_data.py"],
         "data_info": SRC / "data_management" / "data_info.yaml",
-        "data_1": SRC / "data" / "data.csv",
-    },
-)
-@pytask.mark.produces(BLD / "python" / "data" / "data_clean1.csv")
-def task_clean_data_python(depends_on, produces):
-    """Clean the data (Python version)."""
-    read_yaml(depends_on["data_info"])
-    data_1 = load_data(depends_on["data_1"])
-    data_1.to_csv(produces, index=False)
-
-
-@pytask.mark.depends_on(
-    {
-        "scripts": ["clean_data.py"],
-        "data_info": SRC / "data_management" / "data_info.yaml",
         "data": SRC / "data" / "data_raw.dta",
     },
 )
@@ -38,4 +23,20 @@ def task_build_dataset(depends_on, produces):
     data = load_data(depends_on["data"])
     data_info = read_yaml(depends_on["data_info"])
     outcome_variables_data = build_dataset(data=data, data_info=data_info)
+    outcome_variables_data.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "scripts": ["variable_construction.py"],
+        "data_info": SRC / "data_management" / "data_info.yaml",
+        "data": SRC / "data" / "data_to_construct_variables.dta",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "data" / "geoclimatic_controls.csv")
+def task_construct_control_variables(depends_on, produces):
+    """Clean the data (Python version)."""
+    data = load_data(depends_on["data"])
+    data_info = read_yaml(depends_on["data_info"])
+    outcome_variables_data = construct_control_variables_dataset(data, data_info)
     outcome_variables_data.to_csv(produces, index=False)
