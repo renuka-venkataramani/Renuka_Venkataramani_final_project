@@ -26,6 +26,10 @@ dependencies:
   - setuptools_scm
   - statsmodels
   - toml
+  - geopy
+  - geopandas
+  - mapclassify
+  - folium
   - pip:
       - -e .
       - kaleido
