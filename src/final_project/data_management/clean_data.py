@@ -68,3 +68,71 @@ def select_partial_data(data, variables_list):
             axis=1,
         )
     return outcome_variables_data
+
+
+def build_dataset(data, data_info):
+    """
+
+    Args:
+        data (_type_): _description_
+        data_info (_type_): _description_.
+    """
+    # keep columns present in data_info['outcome_variables']
+    cross_sectional_data = select_partial_data(
+        data=data,
+        variables_list=data_info["outcome_variables_cs_rename_mapping"].keys(),
+    )
+    cross_sectional_data = _drop_nan(data=cross_sectional_data, data_info=data_info)
+    cross_sectional_data.rename(
+        columns=data_info["outcome_variables_cs_rename_mapping"],
+        inplace=True,
+    )
+    time_series_variable_rename = _outcome_variables_rename(
+        data_subset=select_partial_data(
+            data=data,
+            variables_list=data_info["outcome_variables_ts_rename_mapping"].keys(),
+        ),
+        data_info=data_info,
+    )
+    outcome_variables_data = pd.concat(
+        [cross_sectional_data, time_series_variable_rename],
+        axis=1,
+    )
+    return outcome_variables_data
+
+
+def _drop_nan(data, data_info):
+    """"""
+    for col in data.filter(like="state_").columns.to_list():
+        data = data.drop(columns=col)
+    data = data.drop(columns=data_info["drop_outcome_variables"])
+    return data
+
+
+def _change_column_names(custom_rename_func):
+    def _rename_columns(data_subset, data_info):
+        change_col_name = (
+            data_subset.filter(like="_")
+            .columns.to_series()
+            .str.rsplit("_")
+            .str[-2]
+            .map(data_info["outcome_variables_ts_rename_mapping"])
+            + "_"
+            + data_subset.filter(like="_").columns.to_series().str.rsplit("_").str[-1]
+        )
+        data_subset.rename(columns=change_col_name.to_dict(), inplace=True)
+        custom_rename_func(data_subset, data_info)
+        return data_subset
+
+    return _rename_columns
+
+
+@_change_column_names
+def _outcome_variables_rename(data_subset, data_info):
+    rename_DivMf_col = (
+        "manufacturing_diversity"
+        + "_"
+        + data_subset.filter(like="DivMf").columns.to_series().str[5:9]
+    )
+    data_subset.rename(columns=rename_DivMf_col.to_dict(), inplace=True)
+    return data_subset
