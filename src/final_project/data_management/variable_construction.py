@@ -4,7 +4,7 @@ import pandas as pd
 from final_project.data_management import select_partial_data
 
 
-def construct_control_variables_dataset(data, data_info):
+def construct_control_variables_dataset(data, data_info, outcome_data):
     crop_share = _crop_shares(data, data_info)
     cs_no_plantaion_crop = crop_share.drop(columns=["plantation_crops"])
     # plantation_crop is included while creating largest_share categorical variable
@@ -25,9 +25,13 @@ def construct_control_variables_dataset(data, data_info):
         ),
         num=0.25,
     )
+    state_dummies = pd.get_dummies(outcome_data["state"]).rename(
+        columns=lambda x: f"state_{x}",
+    )
     control_variables = pd.concat(
         [
             crop_share,
+            state_dummies,
             dominant_crop_indicators,
             largest_crop_indicators,
             share_above_point_50,
@@ -90,10 +94,10 @@ def __crop_share_dataset(agri_crop_output):
 def _dominant_indicators(data):
     # plantation_crop type is included
     dominant_share_dummies = __max_share_dummies(data, dummy_name="dominant_")
-    # subset includes dominant_share_indicators of  'wheat', 'corn', 'cotton', 'hay', 'animal_slaughtered'
+    # subset includes dominant_share_indicators of  'wheat', 'corn', 'cotton', 'hay', 'animal_slaughtered', 'plantation_crops'
     dominant_dummy_subset = select_partial_data(
         dominant_share_dummies,
-        variables_list=(list(np.array(data.columns.to_list())[[0, 2, 6, 16, 35]])),
+        variables_list=(list(np.array(data.columns.to_list())[[0, 2, 6, 16, 35, 36]])),
     )
     return dominant_dummy_subset
 
