@@ -84,7 +84,6 @@ outcome_variables_ts_rename_mapping:
   lnpopdens: ln_population_density  # population density
   mfpopsh: pop_share_in_manuf_sector  # population share of the manufacturing sector
   DivMf: manufacturing_diversity  # manufacturing diversity
-   # farm output per improved acre
 
 outcome_variables_cs_rename_mapping:
   # cross-sectional
