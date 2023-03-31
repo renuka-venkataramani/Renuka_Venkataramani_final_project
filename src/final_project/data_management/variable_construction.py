@@ -5,6 +5,17 @@ from final_project.data_management import select_partial_data
 
 
 def construct_control_variables_dataset(data, data_info, outcome_data):
+    """Variables are constructed that are used in the main analysis.
+
+    Args:
+        data (dataframe): Source_variable dataframe from which the data is built
+        data_info (.yaml): Information about the data columns
+        outcome_data (dataframe): Outcome_variables/ dependent variables dataframe
+
+    Returns:
+        dataframe: Returns the dataframe with the constructed variables
+
+    """
     crop_share = _crop_shares(data, data_info)
     cs_no_plantaion_crop = crop_share.drop(columns=["plantation_crops"])
     # plantation_crop is included while creating largest_share categorical variable
@@ -43,6 +54,17 @@ def construct_control_variables_dataset(data, data_info, outcome_data):
 
 
 def _crop_shares(data, data_info):
+    """Sub function of construct_control_variables_dataset that constructs agriculture
+    yield shares.
+
+    Args:
+        data (dataframe): Source_variable dataframe from which the data is built
+        data_info (.yaml): Information about the data columns
+
+    Returns:
+        dataframe: Containing the shares of different agriculture products
+
+    """
     data = data.drop(columns=data_info["drop_construction_variable_columns"])
     agri_crop_output = __select_agricrop_output(data, data_info)
     crop_shares = __crop_share_dataset(agri_crop_output)
@@ -50,6 +72,16 @@ def _crop_shares(data, data_info):
 
 
 def __select_agricrop_output(data, data_info):
+    """Sub function of _crop_shares that selects agriculture_crop_outputs.
+
+    Args:
+        data (dataframe): Source_variable dataframe from which the data is built
+        data_info (.yaml): Information about the data columns
+
+    Returns:
+        dataframe: Containing the shares of different agriculture products
+
+    """
     agri_crop_output_col = (
         data.filter(like="ag10").columns.to_list()
         + data.filter(like="agz00").columns.to_list()
@@ -75,6 +107,16 @@ def __select_agricrop_output(data, data_info):
 
 
 def __crop_share_dataset(agri_crop_output):
+    """Sub function of _crop_shares that calculates crop share.
+
+    Args:
+        data (dataframe): Source_variable dataframe from which the data is built
+        data_info (.yaml): Information about the data columns
+
+    Returns:
+        dataframe: Containing the crop_shares
+
+    """
     farm_output = agri_crop_output.sum(axis=1)
     crop_share_data = pd.DataFrame()
     for col in agri_crop_output.columns:
@@ -92,6 +134,17 @@ def __crop_share_dataset(agri_crop_output):
 
 
 def _dominant_indicators(data):
+    """Creates dummies for the shares that are dominant. Only the shares of 'wheat',
+    'corn', 'cotton', 'hay', 'animal_slaughtered', 'plantation_crops' are included to
+    find the dominant yield.
+
+    Args:
+        data (dataframe): Source_variable dataframe from which the data is built
+
+    Returns:
+        dataframe: Returns the dataframe with dominant share dummies
+
+    """
     # plantation_crop type is included
     dominant_share_dummies = __max_share_dummies(data, dummy_name="dominant_")
     # subset includes dominant_share_indicators of  'wheat', 'corn', 'cotton', 'hay', 'animal_slaughtered', 'plantation_crops'
@@ -103,6 +156,16 @@ def _dominant_indicators(data):
 
 
 def __max_share_dummies(data, dummy_name):
+    """Sub function used in dominant_indicator function to create largest share dummies.
+
+    Args:
+        data (dataframe): Source_variable dataframe from which the data is built
+        dummy_name (string): dummy name: dominant_ or above_50_
+
+    Returns:
+        dataframe: writtens dominant share dummies
+
+    """
     crop_share_data = data.copy()
     crop_share_data["dominant_crop"] = data.idxmax(axis=1)
     dominant_share_dummies = pd.get_dummies(crop_share_data["dominant_crop"]).rename(
@@ -112,6 +175,16 @@ def __max_share_dummies(data, dummy_name):
 
 
 def _above_value_indicators(data, num):
+    """Sub function used to create above value 0.50 and 0.25.
+
+    Args:
+        data (dataframe): Source variable dataframe
+        num (float): 0.50 or 0.25
+
+    Returns:
+        returns: above the value dummies
+
+    """
     share_above_value = pd.DataFrame()
     for col in data.columns:
         share_above_value[f"above_{num}_{col}"] = (data[col] > num).astype(int)
