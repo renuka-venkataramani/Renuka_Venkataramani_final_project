@@ -35,14 +35,20 @@ def task_build_dataset(depends_on, produces):
         "scripts": ["variable_construction.py"],
         "data_info": SRC / "data_management" / "data_info.yaml",
         "data": SRC / "data" / "data_to_construct_variables.dta",
+        "outcome_data": SRC / "data" / "data_raw.dta",
     },
 )
 @pytask.mark.produces(BLD / "python" / "data" / "constructed_variables.csv")
 def task_constructed_variables(depends_on, produces):
     """Clean the data (Python version)."""
     data = load_data(depends_on["data"])
+    outcome_data = load_data(depends_on["outcome_data"])
     data_info = read_yaml(depends_on["data_info"])
-    outcome_variables_data = construct_control_variables_dataset(data, data_info)
+    outcome_variables_data = construct_control_variables_dataset(
+        data,
+        data_info,
+        outcome_data,
+    )
     outcome_variables_data.to_csv(produces, index=False)
 
 
