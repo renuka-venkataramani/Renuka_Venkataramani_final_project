@@ -23,7 +23,13 @@ from final_project.utilities import read_yaml
 )
 @pytask.mark.produces(BLD / "python" / "data" / "outcome_variables_data.csv")
 def task_build_dataset(depends_on, produces):
-    """Clean the data (Python version)."""
+    """Task to build outcome_variables_dataset.
+
+    Args:
+        depends_on (dict): path for inputs files
+        produces (dict): path for saving output file
+
+    """
     data = load_data(depends_on["data"])
     data_info = read_yaml(depends_on["data_info"])
     outcome_variables_data = build_dataset(data=data, data_info=data_info)
@@ -40,7 +46,13 @@ def task_build_dataset(depends_on, produces):
 )
 @pytask.mark.produces(BLD / "python" / "data" / "constructed_variables.csv")
 def task_constructed_variables(depends_on, produces):
-    """Clean the data (Python version)."""
+    """Task to build constructed variables dataset.
+
+    Args:
+        depends_on (dict): path for inputs files
+        produces (dict): path for saving output file
+
+    """
     data = load_data(depends_on["data"])
     outcome_data = load_data(depends_on["outcome_data"])
     data_info = read_yaml(depends_on["data_info"])
@@ -71,7 +83,14 @@ def task_constructed_variables(depends_on, produces):
     },
 )
 def task_build_control_variables(depends_on, produces):
-    """Clean the data (Python version)."""
+    """Task to build three different control variables: geoclimatic, crop-specific and
+    socioeconomic controls.
+
+    Args:
+        depends_on (dict): path for inputs files
+        produces (dict): path for saving output file
+
+    """
     data = load_data(depends_on["data"])
     constructed_data = load_data(depends_on["constructed_data"])
     data_info = read_yaml(depends_on["data_info"])
