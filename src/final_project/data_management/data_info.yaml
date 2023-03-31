@@ -37,6 +37,14 @@ agriculture_products:
   - market_garden
   - animal_slaughtered
 
+five major products:
+  - corn
+  - cotton
+  - animals_slaughtered
+  - hay
+  - wheat
+  - plantation_crops
+
 drop_construction_variable_columns:
   - ag1007C4
 
@@ -47,7 +55,6 @@ outcome_variables:
   - lnpopdens
   - mfpopsh
   - DivMf
-  - lnfarmoutpiacr
   - lnincomepercap
   - LnPatsNew18601940PD
   - lnclasses
@@ -60,16 +67,27 @@ outcome_variables:
 
 drop_outcome_variables:
   - statea
+  - div36_1860LAdj
+  - div36_1860CAdj
 
 shapefile_key:
   - GISJOIN2
 
+map1_group:
+  - pop_share_in_manuf_sector_1900
+  - ln_income_per_capita
+  - ln_population_density_2000
+  - agriculture_diversity
+
 outcome_variables_ts_rename_mapping:
-  lnpopdens: ln_population_density,  # population density
-  mfpopsh: pop_share_in_manuf_sector,  # population share of the manufacturing sector
-  DivMf: manufacturing_diversity  #  manu  # farm output per improved acre
+  # timeseries
+  lnpopdens: ln_population_density  # population density
+  mfpopsh: pop_share_in_manuf_sector  # population share of the manufacturing sector
+  DivMf: manufacturing_diversity  # manufacturing diversity
+   # farm output per improved acre
 
 outcome_variables_cs_rename_mapping:
+  # cross-sectional
   GISJOIN2: GISJOIN2
   state: state
   county: county
@@ -84,15 +102,37 @@ outcome_variables_cs_rename_mapping:
   bankdens_1920: bank_density  # bank density in 1920
   ShFarmlandTop10_1870: farmland_share_in_top10  # share of Farmland in Top 10 Percent Largest Farms, 1870
   lnedsppc_1890: school_exp_per_capita  # School Expenditures Per Capita, 1890
+  lnfarmoutpcar: ln_farm_output_per_acre  # 1860
 
-Geoclimatic_controls_column_rename_mapping:
+geoclimatic_controls_column_rename_mapping:
   pc1all: first_pc_attainable_yields  # first principal component of agro-climatic attainable yields for 22 crops
   LGPE: length_of_growing_period
   LatentAgProdEtas: latent_agricultural_profitability
   landsuit: land_suitability
-  precep_main: annual rainfall
+  precep_mean: annual rainfall
   temp_mean: temperature
   lnalt_mean: ln_elevation
   gisarea: county_area
   DistOceansGLakes: distance_to_ocean  # or Great lakes
   falllinedist: distance_to_fall_line
+  latitude: latitude
+  longitude: longitude
+  avgnormsuits: avr_crop_specific_productivity
+  maxnormsuits: max_crop_specific_productivity
+
+
+socioeconomic_controls_rename:
+  urbansh_1860: urban_population_share  # 1860
+  slavesh_1860: slave_population_share  # 1860
+  wforeignsh_1860: foreigners_population_share  # 1860
+  youngsh_1860: young_population_share  # below 15 yrs (1860)
+  oldsh_1860: old_population_share  # above 65 years (1860)
+  DistRailroad: Distance_to_rail_road
+  farmout_1860: agriculture_output
+  canaldist: distance_to_canals  # squared, cubed
+  DistToRivers: distance_to_rivers  # steam-boat navigated rivers
+  MarkertPotential: market_potential
+  lnfarmoutpiacr: ln_farmoutput_iacre
+
+crop_specific_controls:
+  - dominant_
