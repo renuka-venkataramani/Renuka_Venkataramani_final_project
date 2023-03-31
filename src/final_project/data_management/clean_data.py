@@ -4,39 +4,6 @@
 import pandas as pd
 
 
-def clean_data1(data_1, data_info):
-    """Clean data set.
-
-    Information on data columns is stored in ``data_management/data_info.yaml``.
-
-    Args:
-        data (pandas.DataFrame): The data set.
-        data_info (dict): Information on data set stored in data_info.yaml. The
-            following keys can be accessed:
-            - 'outcome': Name of dependent variable column in data
-            - 'outcome_numerical': Name to be given to the numerical version of outcome
-            - 'columns_to_drop': Names of columns that are dropped in data cleaning step
-            - 'categorical_columns': Names of columns that are converted to categorical
-            - 'column_rename_mapping': Old and new names of columns to be renamend,
-                stored in a dictionary with design: {'old_name': 'new_name'}
-            - 'url': URL to data set
-
-    Returns:
-        pandas.DataFrame: The cleaned data set.
-
-    """
-    data_1 = data_1.drop(columns=data_info["columns_to_drop"])
-    data_1 = data_1.dropna()
-    for cat_col in data_info["categorical_columns"]:
-        data_1[cat_col] = data_1[cat_col].astype("category")
-    data_1 = data_1.rename(columns=data_info["column_rename_mapping"])
-
-    numerical_outcome = pd.Categorical(data_1[data_info["outcome"]]).codes
-    data_1[data_info["outcome_numerical"]] = numerical_outcome
-
-    return data_1
-
-
 def load_data(file_path):
     """This function imports either stata or csv data file.
 
@@ -136,3 +103,35 @@ def _outcome_variables_rename(data_subset, data_info):
     )
     data_subset.rename(columns=rename_DivMf_col.to_dict(), inplace=True)
     return data_subset
+
+
+def build_geoclimatic_controls(data, var, data_info):
+    geoclimatic_data = select_partial_data(data=data, variables_list=var.keys())
+    for key, value in var.items():
+        geoclimatic_data.columns = geoclimatic_data.columns.str.replace(key, value)
+    subset_geo_control = select_partial_data(
+        data=data,
+        variables_list=data_info["agriculture_products"],
+    )
+    geoclimatic_data = pd.concat([geoclimatic_data, subset_geo_control], axis=1)
+    return geoclimatic_data
+
+
+def build_socioeconomic_controls(data, data_info):
+    socioeconomic_controls = select_partial_data(
+        data=data,
+        variables_list=data_info["socioeconomic_controls_rename"].keys(),
+    )
+    socioeconomic_controls.rename(
+        columns=data_info["socioeconomic_controls_rename"],
+        inplace=True,
+    )
+    return socioeconomic_controls
+
+
+def build_crop_specific_controls(sub_data):
+    crop_specific_controls = select_partial_data(
+        data=sub_data,
+        variables_list=sub_data.filter(like="dominant_").columns.to_list(),
+    )
+    return crop_specific_controls
