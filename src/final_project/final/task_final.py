@@ -1,42 +1,37 @@
 """Tasks running the results formatting (tables, figures)."""
-
-import pandas as pd
 import pytask
 
-from final_project.analysis.model import load_model
-from final_project.config import BLD, GROUPS, SRC
-from final_project.final import plot_regression_by_age
+from final_project.config import BLD, SRC
+from final_project.data_management import load_data
+from final_project.final.tables import create_table_1_agricultural_production_data
 from final_project.utilities import read_yaml
 
-for group in GROUPS:
 
-    kwargs = {
-        "group": group,
-        "depends_on": {"predictions": BLD / "python" / "predictions" / f"{group}.csv"},
-        "produces": BLD / "python" / "figures" / f"smoking_by_{group}.png",
-    }
+@pytask.mark.depends_on(
+    {
+        "scripts": ["tables.py"],
+        "main_data": BLD / "python" / "data" / "outcome_variables_data.csv",
+        "data": BLD / "python" / "data" / "constructed_variables.csv",
+        "data_info": SRC / "data_management" / "data_info.yaml",
+    },
+)
+@pytask.mark.produces(
+    BLD / "python" / "predictions" / "Table1_agricultural_production_data.pkl",
+)
+def task_table_1_agricultural_production_data(depends_on, produces):
+    """Create table1: agriculture_production_data.
 
-    @pytask.mark.depends_on(
-        {
-            "data_info": SRC / "data_management" / "data_info.yaml",
-            "data": BLD / "python" / "data" / "data_clean.csv",
-        },
+    Args:
+        depends_on (dict): Path to extract input
+        produces (dict): path to store output
+
+    """
+    data = load_data(depends_on["data"])
+    outcome_variable_data = load_data(depends_on["main_data"])
+    data_info = read_yaml(depends_on["data_info"])
+    outcome_variables_data = create_table_1_agricultural_production_data(
+        data,
+        outcome_variable_data,
+        data_info,
     )
-    @pytask.mark.task(id=group, kwargs=kwargs)
-    def task_plot_results_by_age_python(depends_on, group, produces):
-        """Plot the regression results by age (Python version)."""
-        data_info = read_yaml(depends_on["data_info"])
-        data = pd.read_csv(depends_on["data"])
-        predictions = pd.read_csv(depends_on["predictions"])
-        fig = plot_regression_by_age(data, data_info, predictions, group)
-        fig.write_image(produces)
-
-
-@pytask.mark.depends_on(BLD / "python" / "models" / "model.pickle")
-@pytask.mark.produces(BLD / "python" / "tables" / "estimation_results.tex")
-def task_create_results_table_python(depends_on, produces):
-    """Store a table in LaTeX format with the estimation results (Python version)."""
-    model = load_model(depends_on)
-    table = model.summary().as_latex()
-    with open(produces, "w") as f:
-        f.writelines(table)
+    outcome_variables_data.to_pickle(produces)
