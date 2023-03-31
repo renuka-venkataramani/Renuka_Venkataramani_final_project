@@ -23,11 +23,25 @@ def data_info():
 
 
 def test_select_partial_data(data, data_info):
+    """Test select_partal_data func.
+
+    Args:
+        data (dataframe): test data from pytest.fixture
+        data_info (.yaml): .yaml file from pytest.fixture
+
+    """
     x = select_partial_data(data=data, variables_list=data_info["variable_list"])
     assert x.columns.to_list() == ["bankdens_1920", "farmout_1860", "ShNewSkills1940"]
 
 
 def test_build_dataset(data, data_info):
+    """Test build_dataset func.
+
+    Args:
+        data (dataframe): test data from pytest.fixture
+        data_info (.yaml): .yaml file from pytest.fixture
+
+    """
     x = build_dataset(data, data_info)
     assert {
         "skill_intensive_share",
@@ -37,6 +51,13 @@ def test_build_dataset(data, data_info):
 
 
 def test_build_geoclimatic_controls(data, data_info):
+    """Test build_geoclimatic_controls function.
+
+    Args:
+        data (dataframe): test data from pytest.fixture
+        data_info (.yaml): .yaml file from pytest.fixture
+
+    """
     x = build_geoclimatic_controls(
         data,
         var=data_info["geoclimatic_controls_column_rename_mapping"],
@@ -46,6 +67,13 @@ def test_build_geoclimatic_controls(data, data_info):
 
 
 def test_build_socioeconomic_controls(data, data_info):
+    """Test build_socioeconomic_controls function.
+
+    Args:
+        data (dataframe): test data from pytest.fixture
+        data_info (.yaml): .yaml file from pytest.fixture
+
+    """
     x = build_socioeconomic_controls(data, data_info)
     assert not set(data_info["socioeconomic_controls_rename"].keys()).intersection(
         set(x.columns),
@@ -59,6 +87,12 @@ def setup():
 
 
 def test_load_data(setup):
+    """test load_data()
+
+    Args:
+        setup (func): that defines the input required to test
+
+    """
     with pytest.raises(
         ValueError,
         match="Datafile should be either .dta or .csv file!",
@@ -69,6 +103,12 @@ def test_load_data(setup):
 # input should have been dataset generated from constructed_variable file, not the raw_data
 @pytest.mark.xfail(reason="Invalid inputs")
 def test_build_crop_specific_controls(data):
+    """Test build_crop_specific_controls.
+
+    Args:
+        data (dataframe): test data from pytest.fixture
+
+    """
     x = build_crop_specific_controls(data)
     assert {
         "dominant_corn",
