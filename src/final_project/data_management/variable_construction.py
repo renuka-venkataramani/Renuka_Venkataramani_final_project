@@ -39,6 +39,7 @@ def construct_control_variables_dataset(data, data_info, outcome_data):
     state_dummies = pd.get_dummies(outcome_data["state"]).rename(
         columns=lambda x: f"state_{x}",
     )
+    state_dummies.rename(columns=data_info["state_dummies_rename"], inplace=True)
     control_variables = pd.concat(
         [
             crop_share,
