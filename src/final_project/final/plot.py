@@ -4,6 +4,18 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def map_agriculture_diversity(csv_data, geo_data, variable):
+    """Plot that merges pd.dataframe to shapefile after converting it to geodataframe.
+    Produce a map file.
+
+    Args:
+        csv_data (dataframe): pandas dataframe
+        geo_data (geometry): geopandas dataframe
+        variable (object): variable to be linked
+
+    Returns:
+        _type_: Plot that links the variable and the map, giving the share of the variable in each county
+
+    """
     geo_data["GISJOIN2"] = pd.to_numeric(geo_data["GISJOIN2"])
     merge_df_shp = geo_data.merge(
         csv_data[[variable, "GISJOIN2"]],
