@@ -31,7 +31,7 @@ $ pytask
 $ pytest
 ```
 
-## Flowchart of the work: ALL the major files are carried in the SRC folder
+## Flowchart of the work: ALL the major files are stored in the SRC folder
 
 ### Data:
 1. Inputs: Inputs are saved in SRC # build through config.py 
