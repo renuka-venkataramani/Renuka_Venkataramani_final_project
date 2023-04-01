@@ -43,7 +43,7 @@ for group in GROUP:
 
     kwargs = {
         "group": group,
-        "produces": BLD / "python" / "figures" / f"smoking_by_{group}.png",
+        "produces": BLD / "python" / "figures" / f"{group}.png",
     }
 
     @pytask.mark.depends_on(
@@ -65,4 +65,5 @@ for group in GROUP:
             geo_data=shp_data,
             variable=group,
         )
-        map1_agri_div.write_image(produces)
+        fig = map1_agri_div.get_figure()
+        fig.savefig(produces)
