@@ -1,5 +1,5 @@
 """Functions for formatting results."""
 
-from final_project.final.plot import plot_regression_by_age
+from final_project.final.tables import create_table_1_agricultural_production_data
 
-__all__ = [plot_regression_by_age]
+__all__ = [create_table_1_agricultural_production_data]

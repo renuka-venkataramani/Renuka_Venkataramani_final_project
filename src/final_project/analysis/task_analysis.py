@@ -1,6 +1,7 @@
 # """Tasks running the core analyses."""
 import pandas as pd
 import pytask
+from statsmodels.iolib.summary2 import summary_col
 
 from final_project.analysis.model import (
     OLS_controls_state,
@@ -37,11 +38,7 @@ for group in REG_GROUP:
     )
     @pytask.mark.produces(
         {
-            "model_1": BLD / "python" / "figures" / f"no_controls_{group}.png",
-            "model_2": BLD / "python" / "figures" / f"state_{group}.png",
-            "model_3": BLD / "python" / "figures" / f"state_geo_{group}.png",
-            "model_4": BLD / "python" / "figures" / f"state_geo_crop_{group}.png",
-            "model_5": BLD / "python" / "figures" / f"state_geo_crop_socio_{group}.png",
+            "model_1": BLD / "python" / "figures" / f"no_controls_{group}.csv",
         },
     )
     @pytask.mark.task(id=group, kwargs=kwargs)
@@ -58,24 +55,37 @@ for group in REG_GROUP:
         geo_control = pd.read_csv(depends_on["geo_control"])
         pd.read_csv(depends_on["socio_controls"])
         pd.read_csv(depends_on["crop_controls"])
-        model_1 = OLS_no_controls(
+        no_control = OLS_no_controls(
             dependent_variable=outcome_var_data,
             endo_var=group,
             exo_var="agriculture_diversity",
         )
-        model_2 = OLS_controls_state(
+        control_state = OLS_controls_state(
             exo_var="agriculture_diversity",
             endo_var=group,
             constructed_data=constructed_data,
             outcome_var_data=outcome_var_data,
         )
-        model_3 = OLS_controls_state_geoclimate(
+        control_state_geoclimate = OLS_controls_state_geoclimate(
             exo_var="agriculture_diversity",
             endo_var=group,
             constructed_data=constructed_data,
             outcome_var_data=outcome_var_data,
             geo_control=geo_control,
         )
-        model_1.savefig(produces["model1"])
-        model_2.savefig(produces["model1"])
-        model_3.savefig(produces["model1"])
+        dfoutput = summary_col(
+            [no_control, control_state, control_state_geoclimate],
+            stars=True,
+            float_format="%0.4f",
+            model_names=[
+                "no_control",
+                "state Fixed Effect",
+                "control_state_geoclimate",
+            ],
+            info_dict={
+                "N": lambda x: f"{int(x.nobs):d}",
+                "R2": lambda x: f"{x.rsquared:.2f}",
+            },
+            regressor_order=["Intercept", "agriculture_diversity"],
+        )
+        dfoutput.tables[0].to_csv(produces["model_1"])
