@@ -8,8 +8,7 @@ def OLS_no_controls(dependent_variable, endo_var, exo_var="agriculture_diversity
         data=dependent_variable,
     )
     res = model.fit()
-    summary = res.summary()
-    return summary
+    return res
 
 
 # ols regression:
@@ -23,8 +22,7 @@ def OLS_controls_state(exo_var, endo_var, constructed_data, outcome_var_data):
     model_data = pd.concat([model_data, dependent_variable], axis=1)
     model_state_FE = sm.formula.ols(formula=ols_formula, data=model_data)
     res = model_state_FE.fit()
-    summary = res.summary()
-    return summary
+    return res
 
 
 def OLS_controls_state_geoclimate(
@@ -56,5 +54,4 @@ def OLS_controls_state_geoclimate(
     )
     model_state_control = sm.formula.ols(formula=ols_formula, data=model_data_FE)
     res = model_state_control.fit()
-    summary = res.summary()
-    return summary
+    return res
