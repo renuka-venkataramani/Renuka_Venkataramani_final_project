@@ -39,22 +39,22 @@ $ pytest
 
 ### Data_Management:
 
-1. Initially the data_raw.dta file is imported
-2. data_to_construct_variables.dta is also read. This file is used to create indicator
+1. Initially the **data_raw.dta** file is imported
+2. **data_to_construct_variables.dta** is also read. This file is used to create indicator
    dummies
 3. The above step is done in variable_construction.py
-4. data_info.yaml contains the name of the variables in the data_raw file and renaming
+4. **data_info.yaml** contains the name of the variables in the data_raw file and renaming
    dictionaries. It consists of lists and dictionaries.
 5. This file is used to clean the data (rename columns, drop variables, etc)
-6. data_clean.py is used to build three datasets, to rename the columns into meaningful
+6. **data_clean.py** is used to build three datasets, to rename the columns into meaningful
    string and to map the relevant variables constructed from
-   data_to_construct_variables.dta
+   **data_to_construct_variables.dta**
 
 
 
 ### Analysis:
 
-1. Model.py contains the codes to run OLS with more than 2 controls
+1. **Model.py** contains the codes to run OLS with more than 2 controls
 
 ### Final:
 
