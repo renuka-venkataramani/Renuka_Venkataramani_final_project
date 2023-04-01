@@ -15,4 +15,10 @@ GROUP = [
     "agriculture_diversity",
 ]
 
-__all__ = ["BLD", "SRC", "TEST_DIR", "PAPER_DIR", "GROUP"]
+REG_GROUP = [
+    "ln_population_density_2000",
+    "ln_income_per_capita",
+    "pop_share_in_manuf_sector_1900",
+]
+
+__all__ = ["BLD", "SRC", "TEST_DIR", "PAPER_DIR", "GROUP", "REG_GROUP"]
