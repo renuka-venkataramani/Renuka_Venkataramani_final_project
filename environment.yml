@@ -30,6 +30,7 @@ dependencies:
   - geopandas
   - mapclassify
   - folium
+  - pyshp
   - pip:
       - -e .
       - kaleido
