@@ -1,54 +1,97 @@
-"""Functions for fitting the regression model."""
-
-import statsmodels.formula.api as smf
-from statsmodels.iolib.smpickle import load_pickle
+import pandas as pd
+import statsmodels.api as sm
 
 
-def fit_logit_model(data, data_info, model_type):
-    """Fit a logit model to data.
-
-    Args:
-        data (pandas.DataFrame): The data set.
-        data_info (dict): Information on data set stored in data_info.yaml. The
-            following keys can be accessed:
-            - 'outcome': Name of dependent variable column in data
-            - 'outcome_numerical': Name to be given to the numerical version of outcome
-            - 'columns_to_drop': Names of columns that are dropped in data cleaning step
-            - 'categorical_columns': Names of columns that are converted to categorical
-            - 'column_rename_mapping': Old and new names of columns to be renamend,
-                stored in a dictionary with design: {'old_name': 'new_name'}
-            - 'url': URL to data set
-        model_type (str): What model to build for the linear relationship of the logit
-            model. Currently implemented:
-            - 'linear': Numerical covariates enter the regression linearly, and
-            categorical covariates are expanded to dummy variables.
-
-    Returns:
-        statsmodels.base.model.Results: The fitted model.
-
-    """
-    outcome_name = data_info["outcome"]
-    outcome_name_numerical = data_info["outcome_numerical"]
-    feature_names = list(set(data.columns) - {outcome_name, outcome_name_numerical})
-
-    if model_type == "linear":
-        # smf.logit expects the binary outcome to be numerical
-        formula = f"{outcome_name_numerical} ~ " + " + ".join(feature_names)
-    else:
-        message = "Only 'linear' model_type is supported right now."
-        raise ValueError(message)
-
-    return smf.logit(formula, data=data).fit()
+def OLS_no_controls(dependent_variable, endo_var):
+    model = sm.formula.ols(
+        formula="endo_var ~ agriculture_diversity",
+        data=dependent_variable,
+    )
+    return model
 
 
-def load_model(path):
-    """Load statsmodels model.
+# ols regression:
+def OLS_controls_state(state_fixed_effects, endo_var, dependent_variable):
+    """OLS regression1:  controls: state FE.
 
     Args:
-        path (str or pathlib.Path): Path to model file.
+        constructed_data (dataframe): constructed dataframe
+        outcome_var_data (dataframe): outcome variable dataframe
 
     Returns:
-        statsmodels.base.model.Results: The stored model.
+        _model: Regression_output
 
     """
-    return load_pickle(path)
+    model_data = state_fixed_effects
+    mod = _create_OLS_formula(model_data, endo_var, dependent_variable)
+    return mod
+
+
+def _create_OLS_formula(
+    model_data,
+    endo_var,
+    dependent_variable,
+    exo_var="agriculture_diversity",
+):
+    """Sub function to create ols formula and regression table.
+
+    Args:
+        model_data (dataframe): regression data
+
+    Returns:
+        expression: regression output
+
+    """
+    model_data_1 = model_data.copy()
+    model_data_1.columns = [f"C({c})" for c in model_data.columns]
+    all_columns = "+".join(model_data_1.columns)
+    ols_formula = "{endo_var} ~ {exo_var}" + "+" + all_columns
+    model_data = pd.concat([model_data, dependent_variable], axis=1)
+    mod = sm.formula.ols(formula=ols_formula, data=model_data)
+    return mod
+
+
+def OLS_controls_state_geoclimate(
+    state_fixed_effects,
+    geoclimatic_controls,
+    endo_var,
+    dependent_variable,
+):
+    model_data = pd.concat([state_fixed_effects, geoclimatic_controls], axis=1)
+    mod = _create_OLS_formula(model_data)
+    return mod
+
+
+def OLS_controls_state_geo_crop(
+    state_fixed_effects,
+    dependent_variable,
+    geoclimatic_controls,
+    crop_specific_controls,
+):
+    model_data = pd.concat(
+        [state_fixed_effects, geoclimatic_controls, crop_specific_controls],
+        axis=1,
+    )
+    mod = _create_OLS_formula(model_data)
+    return mod
+
+
+def OLS_controls_state_geo_crop_socio(
+    state_fixed_effects,
+    dependent_variable,
+    geoclimatic_controls,
+    crop_specific_controls,
+    socioeconomic_controls,
+    endo_var,
+):
+    model_data = pd.concat(
+        [
+            state_fixed_effects,
+            geoclimatic_controls,
+            crop_specific_controls,
+            socioeconomic_controls,
+        ],
+        axis=1,
+    )
+    mod = _create_OLS_formula(model_data)
+    return mod
