@@ -2,96 +2,59 @@ import pandas as pd
 import statsmodels.api as sm
 
 
-def OLS_no_controls(dependent_variable, endo_var):
+def OLS_no_controls(dependent_variable, endo_var, exo_var="agriculture_diversity"):
     model = sm.formula.ols(
-        formula="endo_var ~ agriculture_diversity",
+        formula=f"{endo_var} ~ {exo_var}",
         data=dependent_variable,
     )
-    return model
+    res = model.fit()
+    summary = res.summary()
+    return summary
 
 
 # ols regression:
-def OLS_controls_state(state_fixed_effects, endo_var, dependent_variable):
-    """OLS regression1:  controls: state FE.
-
-    Args:
-        constructed_data (dataframe): constructed dataframe
-        outcome_var_data (dataframe): outcome variable dataframe
-
-    Returns:
-        _model: Regression_output
-
-    """
-    model_data = state_fixed_effects
-    mod = _create_OLS_formula(model_data, endo_var, dependent_variable)
-    return mod
-
-
-def _create_OLS_formula(
-    model_data,
-    endo_var,
-    dependent_variable,
-    exo_var="agriculture_diversity",
-):
-    """Sub function to create ols formula and regression table.
-
-    Args:
-        model_data (dataframe): regression data
-
-    Returns:
-        expression: regression output
-
-    """
+def OLS_controls_state(exo_var, endo_var, constructed_data, outcome_var_data):
+    model_data = constructed_data.filter(like="state_")
+    dependent_variable = outcome_var_data[[endo_var, "agriculture_diversity"]]
     model_data_1 = model_data.copy()
     model_data_1.columns = [f"C({c})" for c in model_data.columns]
     all_columns = "+".join(model_data_1.columns)
-    ols_formula = "{endo_var} ~ {exo_var}" + "+" + all_columns
+    ols_formula = f"{endo_var} ~ {exo_var}" + "+" + all_columns
     model_data = pd.concat([model_data, dependent_variable], axis=1)
-    mod = sm.formula.ols(formula=ols_formula, data=model_data)
-    return mod
+    model_state_FE = sm.formula.ols(formula=ols_formula, data=model_data)
+    res = model_state_FE.fit()
+    summary = res.summary()
+    return summary
 
 
 def OLS_controls_state_geoclimate(
-    state_fixed_effects,
-    geoclimatic_controls,
+    exo_var,
     endo_var,
-    dependent_variable,
+    constructed_data,
+    outcome_var_data,
+    geo_control,
 ):
-    model_data = pd.concat([state_fixed_effects, geoclimatic_controls], axis=1)
-    mod = _create_OLS_formula(model_data)
-    return mod
-
-
-def OLS_controls_state_geo_crop(
-    state_fixed_effects,
-    dependent_variable,
-    geoclimatic_controls,
-    crop_specific_controls,
-):
-    model_data = pd.concat(
-        [state_fixed_effects, geoclimatic_controls, crop_specific_controls],
-        axis=1,
-    )
-    mod = _create_OLS_formula(model_data)
-    return mod
-
-
-def OLS_controls_state_geo_crop_socio(
-    state_fixed_effects,
-    dependent_variable,
-    geoclimatic_controls,
-    crop_specific_controls,
-    socioeconomic_controls,
-    endo_var,
-):
-    model_data = pd.concat(
+    state_fixed_effects = constructed_data.filter(like="state_")
+    dependent_variable = outcome_var_data[[endo_var, "agriculture_diversity"]]
+    geoclimatic_controls = geo_control[
         [
-            state_fixed_effects,
-            geoclimatic_controls,
-            crop_specific_controls,
-            socioeconomic_controls,
-        ],
+            "county_area",
+            "temperature",
+            "latitude",
+            "longitude",
+            "avr_crop_specific_productivity",
+            "max_crop_specific_productivity",
+        ]
+    ]
+    model_data = pd.concat([state_fixed_effects, geoclimatic_controls], axis=1)
+    model_data.columns = [f"C({c})" for c in model_data.columns]
+    all_columns = "+".join(model_data.columns)
+    ols_formula = f"{endo_var} ~ {exo_var}" + "+" + all_columns
+    model_data_FE = pd.concat(
+        [state_fixed_effects, dependent_variable, geoclimatic_controls],
         axis=1,
     )
-    mod = _create_OLS_formula(model_data)
-    return mod
+    model_state_control = sm.formula.ols(formula=ols_formula, data=model_data_FE)
+    res = model_state_control.fit()
+    summary = res.summary()
+    return summary
