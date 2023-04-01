@@ -31,36 +31,40 @@ $ pytask
 $ pytest
 ```
 
-**Here is the flowchart of the work:**
+## Flowchart of the work
 
-Data_Management:
+### Data_Management:
 
 1. Initially the data_raw.dta file is imported
-1. data_to_construct_variables.dta is also read. This file is used to create indicator
+2. data_to_construct_variables.dta is also read. This file is used to create indicator
    dummies
-1. The above step is done in variable_construction.py
-1. data_info.yaml contains the name of the variables in the data_raw file and renaming
+3. The above step is done in variable_construction.py
+4. data_info.yaml contains the name of the variables in the data_raw file and renaming
    dictionaries. It consists of lists and dictionaries.
-1. This file is used to clean the data (rename columns, drop variables, etc)
-1. data_clean.py is used to build three datasets, to rename the columns into meaningful
+5. This file is used to clean the data (rename columns, drop variables, etc)
+6. data_clean.py is used to build three datasets, to rename the columns into meaningful
    string and to map the relevant variables constructed from
    data_to_construct_variables.dta
 
-Inputs: Inputs are saved in SRC build through config.py Outputs: Output dataframe are
-stored in BLD
+Inputs: Inputs are saved in SRC # build through config.py 
+Outputs: Output dataframe are stored in BLD
 
-Analysis:
+### Analysis:
 
 1. Model.py contains the codes to run OLS with more than 2 controls
 
-Final:
+### Final:
 
 1. plots and tables are stored in final directory. The relevant python files are located
    in the same directory
 
-Task file is written for each and every steps
+### Task: 
 
-Test: the Test includes a duplicate datafile and a data_info.yaml file used to test
+1. Task file is written for each and every steps
+
+### Test: 
+
+1. Test directory includes a duplicate datafile and a data_info.yaml file used to test
 functions. The functions in clean_data under data_management directory are tested.
 
 ## Credits
