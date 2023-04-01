@@ -38,7 +38,7 @@ for group in REG_GROUP:
     )
     @pytask.mark.produces(
         {
-            "model_1": BLD / "python" / "figures" / f"no_controls_{group}.csv",
+            "model_1": BLD / "python" / "predictions" / f"{group}.csv",
         },
     )
     @pytask.mark.task(id=group, kwargs=kwargs)
