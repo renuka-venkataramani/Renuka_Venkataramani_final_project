@@ -31,7 +31,11 @@ $ pytask
 $ pytest
 ```
 
-## Flowchart of the work
+## Flowchart of the work: ALL the major files are carried in the SRC folder
+
+### Data:
+1. Inputs: Inputs are saved in SRC # build through config.py 
+2. Outputs: Output dataframes, plots are stored in BLD
 
 ### Data_Management:
 
@@ -46,8 +50,7 @@ $ pytest
    string and to map the relevant variables constructed from
    data_to_construct_variables.dta
 
-Inputs: Inputs are saved in SRC # build through config.py 
-Outputs: Output dataframe are stored in BLD
+
 
 ### Analysis:
 
