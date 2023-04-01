@@ -43,12 +43,13 @@ for group in REG_GROUP:
     )
     @pytask.mark.task(id=group, kwargs=kwargs)
     def task_regression_outputs(depends_on, group, produces):
-        """
+        """Task to create regression output.
 
         Args:
-            depends_on (_type_): _description_
-            group (_type_): _description_
-            produces (_type_): _description_.
+            depends_on (dict): input pathfile
+            group (list): Consisting of different variables to run analysis. Stored in config.py
+            produces (dict): output pathfile
+
         """
         outcome_var_data = pd.read_csv(depends_on["outcome_var_data"])
         constructed_data = pd.read_csv(depends_on["constructed_data"])

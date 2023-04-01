@@ -2,3 +2,4 @@ src/final_project/data/data_raw.dta filter=lfs diff=lfs merge=lfs -text
 *.dta filter=lfs diff=lfs merge=lfs -text
 src/final_project/data/counties_shapefile.dbf filter=lfs diff=lfs merge=lfs -text
 tests/data_management/test_data.csv filter=lfs diff=lfs merge=lfs -text
+src/final_project/data/AgriDiv_Counties.dbf filter=lfs diff=lfs merge=lfs -text
