@@ -34,7 +34,7 @@ $ pytest
 ## Flowchart of the work: ALL the major files are stored in the SRC folder
 
 ### Data:
-1. Inputs: Inputs are saved in SRC # build through config.py 
+1. Inputs: Inputs are saved in SRC, built with the help of config.py 
 2. Outputs: Output dataframes, plots are stored in BLD
 
 ### Data_Management:
@@ -58,12 +58,12 @@ $ pytest
 
 ### Final:
 
-1. plots and tables are stored in final directory. The relevant python files are located
+1. plots.py and tables.py are stored in final directory. The relevant task files are located
    in the same directory
 
 ### Task: 
 
-1. Task file is written for each and every steps
+1. Task file is written for each and every directory
 
 ### Test: 
 
