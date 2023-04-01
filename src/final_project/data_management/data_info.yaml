@@ -135,3 +135,11 @@ socioeconomic_controls_rename:
 
 crop_specific_controls:
   - dominant_
+
+state_dummies_rename:
+  state_South Carolina: state_South_Carolina
+  state_New Hampshire: state_New_Hampshire
+  state_New Jersey: state_New_Jersey
+  state_New York: state_New_York
+  state_North Carolina: state_North_Carolina
+  state_Rhode Island: state_Rhode_Island
