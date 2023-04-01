@@ -59,21 +59,18 @@
 
 \begin{document}
 
-\title{Final Project\thanks{Renuka Venkataramani, Bonn University. Email: \href{mailto:s6revenkQuni-bonn.de}{\nolinkurl{s6revenkQuni-bonn [dot] de}}.}}
+\title{Agricultural diversity, Structural Change and long-run development: Evidence from US\thanks{Renuka Venkataramani, Bonn University. Email: \href{mailto:s6revenkQuni-bonn.de}{\nolinkurl{s6revenkQuni-bonn [dot] de}}.}}
 
 \author{Renuka Venkataramani}
 
-\date{
-    {\bf Preliminary -- please do not quote}
-    \\[1ex]
-    \today
-}
 
 \maketitle
 
 
 \begin{abstract}
-    Some abstract here.
+    This project replicates a paper title 'Agricultural diversity, Structural Change and long-run development: Evidence from US.
+    This project tries to replicate the analysis result using Python
+    \citet{fiszbein2022agricultural}
 \end{abstract}
 
 \clearpage
@@ -82,40 +79,71 @@
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-If you are using this template, please cite this item from the references:
+One of the unique feature of this file is the use of shape files. Shape files run with the extensions shp, shx, dbf, etc and are read using GIS software.
+One such package is geopandas and this project using geopandas and matplotlib.
 \citet{GaudeckerEconProjectTemplates}.
 
-The data set for the example project is taken from
-\url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}.
-It contains data on smoking habits in the UK, with 1691 observations and 12 variables.
-We consider only 4 of the 12 features for the prediction of the variable
-\texttt{smoking}: \texttt{marital\_status}, \texttt{highest\_qualification},
-\texttt{gender} and \texttt{age}. We model the dependence using a Logistic model. All
-numerical features are included linearly, while categorical features are expanded into
-dummy variables. Figures below illustrate the model predictions over the lifetime. You
-will find one figure and one estimation summary table for each installed programming
-language.
 
 
 
 \begin{figure}[H]
 
     \centering
-    \includegraphics[width=0.85\textwidth]{../python/figures/smoking_by_marital_status}
+    \includegraphics[width=0.85\textwidth]{../python/figures/mapfile_png.png}
 
-    \caption{\emph{Python:} Model predictions of the smoking probability over the
-        lifetime. Each colored line represents a case where marital status is fixed to one
-        of the values present in the data set.}
-    \label{fig:python-predictions}
+    \caption{\emph{Python:} This is the map produced by merging the data column share of population in manufacturing
+    inductry with the shapefile}
+    \label{fig:Mapfile: Share of population in the manufacturing industry}
 
 \end{figure}
 
 
-\begin{table}[!h]
-    \input{../python/tables/estimation_results.tex}
-    \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
-        linear Logistic regression.}
-\end{table}
+\begin{tabular}{rlrrrr}
+    \toprule
+    \hline
+        & Product            &   Mean &   Maximum &   Dominant &   >50% \\
+    \hline
+      0 & wheat              &  10.16 &     92.85 &       8.4  &   0.44 \\
+      1 & rye                &   0.92 &     15.54 &       0    &   0    \\
+      2 & corn               &  23.13 &     98.89 &      43.66 &  10.43 \\
+      3 & oats               &   3.86 &     23.83 &       0    &   0    \\
+      4 & rice               &   0.18 &     46.35 &       0    &   0    \\
+      5 & tobacco            &   1.85 &     36.41 &       0    &   0    \\
+      6 & cotton             &  15.83 &     94.11 &      20.04 &  13.51 \\
+      7 & wool               &   0.99 &    100    &       0    &   0.22 \\
+      8 & peas               &   0.71 &     22.3  &       0    &   0    \\
+      9 & potatoes           &   3.07 &     59.87 &       0    &   0.11 \\
+     10 & sweet_potatoes     &   1.22 &     29.16 &       0    &   0    \\
+     11 & barley             &   0.44 &     10.52 &       0    &   0    \\
+     12 & buckwheat          &   0.56 &     15.31 &       0    &   0    \\
+     13 & wine               &   0.02 &      4.68 &       0    &   0    \\
+     14 & butter             &   4.18 &     25.36 &       0    &   0    \\
+     15 & cheese             &   0.7  &     35.69 &       0    &   0    \\
+     16 & hay                &  11.77 &     73.97 &      17.24 &   1.65 \\
+     17 & clover             &   0.3  &     12.93 &       0    &   0    \\
+     18 & grass_seed         &   0.15 &      9.39 &       0    &   0    \\
+     19 & hops               &   0.17 &     19.51 &       0    &   0    \\
+     20 & dew_rotted_hemp    &   0.26 &     64.76 &       0    &   0.05 \\
+     21 & water_rotted_hemp  &   0.02 &      7.14 &       0    &   0    \\
+     22 & other_hemp         &   0.09 &     21.68 &       0    &   0    \\
+     23 & flax               &   0.04 &      4.77 &       0    &   0    \\
+     24 & flax_seed          &   0.04 &      3.34 &       0    &   0    \\
+     25 & silk_coccoon       &   0.01 &      2.86 &       0    &   0    \\
+     26 & maple_sugar        &   0.22 &     36.26 &       0    &   0    \\
+     27 & cane_sugar         &   0.69 &     46.83 &       0    &   0    \\
+     28 & maple_molasses     &   0.06 &      7.41 &       0    &   0    \\
+     29 & cane_molasses      &   0.16 &     10.5  &       0    &   0    \\
+     30 & sorghum_molasses   &   0.25 &      7    &       0    &   0    \\
+     31 & beeswax            &   0.02 &      1.03 &       0    &   0    \\
+     32 & honey              &   0.23 &      8.38 &       0    &   0    \\
+     33 & orchads            &   1.16 &     24.01 &       0    &   0    \\
+     34 & market_garden      &   0.89 &     98.14 &       0    &   0.22 \\
+     35 & animal_slaughtered &  12.76 &     95.16 &       4.34 &   0.55 \\
+    \hline
+    \endrule
+    \caption {Table 1 produced from the analysis gives the Mean, Max, Dominance and <50 \% of each crops}
+    \end{tabular}
+
 
 
 
